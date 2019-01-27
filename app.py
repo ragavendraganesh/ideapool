@@ -11,8 +11,8 @@ import os
 
 app = Flask(__name__)
 Talisman(app, force_https=False)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
 db = SQLAlchemy(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+os.getcwd()+'/login-flask-restfull.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.config['JWT_SECRET_KEY'] = 'sekretu'
 app.config['JWT_BLACKLIST_ENABLED'] = True

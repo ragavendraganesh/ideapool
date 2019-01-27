@@ -11,3 +11,4 @@ passlib
 pyyaml
 flask-talisman
 libgravatar
+psycopg2
