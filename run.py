@@ -6,12 +6,11 @@ from repository.ideas import *
 import secrets
 
 
-api_flask.add_resource(UserRegistration, '/registration')
+api_flask.add_resource(UserRegistration, '/users')
 api_flask.add_resource(UserLogin, '/access-tokens')
 api_flask.add_resource(UserLogoutAccess, '/logout/access')
 api_flask.add_resource(UserLogoutRefresh, '/logout/refresh')
 api_flask.add_resource(TokenRefresh, '/access-tokens/refresh')
-api_flask.add_resource(Users, '/users', '/users/<int:id>')
 api_flask.add_resource(UserDetails, '/me')
 api_flask.add_resource(Ideas, '/ideas', '/ideas/<string:id>')
 
@@ -43,5 +42,6 @@ def createDatabase():
 
 
 if __name__ == '__main__':
+    port = os.getenv('PORT')
     createDatabase()
-    app.run(host='0.0.0.0', use_reloader=True, debug=True)
+    app.run(host='0.0.0.0', port=port, use_reloader=True, debug=True)

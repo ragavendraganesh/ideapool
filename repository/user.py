@@ -76,17 +76,16 @@ class UserRegistration(Resource):
         except:
             return {'message': 'Something went wrong '}, 500
 
-
-class UserDetails(Resource):
-    @jwt_required
-    def get(self):
-        current_user = get_jwt_identity()
-        return UserModel.return_by_email(email=current_user)
-
-class Users(Resource):
     @jwt_required
     def get(self, id=None):
         if id is None:
             return UserModel.return_all()
         else:
             return UserModel.return_by_id(id)
+
+
+class UserDetails(Resource):
+    @jwt_required
+    def get(self):
+        current_user = get_jwt_identity()
+        return UserModel.return_by_email(email=current_user)
