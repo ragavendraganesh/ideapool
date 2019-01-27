@@ -10,7 +10,7 @@ class UserModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    avatar_url = db.Column(db.String(120), nullable=False)
+    avatar_url = db.Column(db.String(255), nullable=False)
     CreateAt = db.Column(db.DateTime(timezone=True), server_default=func.now())
     password = db.Column(db.String(120), nullable=True)
 
