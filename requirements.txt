@@ -12,3 +12,4 @@ pyyaml
 flask-talisman
 libgravatar
 psycopg2
+gunicorn
