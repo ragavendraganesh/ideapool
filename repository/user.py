@@ -22,7 +22,7 @@ parseUserCreateNoPassword.add_argument('email', help='This field cannot be blank
 
 parserUserUpdate = reqparse.RequestParser()
 parserUserUpdate.add_argument('id', help='This field cannot be blank', required=True)
-parseUserCreate.add_argument('name', help='This field cannot be blank', required=True)
+parserUserUpdate.add_argument('name', help='This field cannot be blank', required=True)
 parserUserUpdate.add_argument('email', help='This field cannot be blank')
 parserUserUpdate.add_argument('password', help='This field cannot be blank')
 
@@ -90,18 +90,3 @@ class Users(Resource):
             return UserModel.return_all()
         else:
             return UserModel.return_by_id(id)
-
-    @jwt_required
-    def delete(self, id):
-        if id:
-            return UserModel.delete_by_id(id)
-        else:
-            return {'message': 'ID cannot be empity'}, 404
-
-    @jwt_required
-    def put(self, id):
-        data = parserUserUpdate.parse_args()
-        if id:
-            return UserModel.update_passowrd_by_id(id, password=data['password'])
-        else:
-            return {'message': 'ID cannot be empity'}, 404

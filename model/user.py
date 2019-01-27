@@ -69,7 +69,7 @@ class UserModel(db.Model):
             return {'message': 'Something went wrong'}, 404
 
     @classmethod
-    def update_passowrd_by_id(cls, id, password):
+    def update_password_by_id(cls, id, password):
         user = cls.query.filter_by(id=id).first_or_404()
         user.password = cls.generate_hash(password=password)
         try:

@@ -1,18 +1,24 @@
 from app import db
 from passlib.hash import pbkdf2_sha256 as sha256
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import func
+import time
+import uuid
 
+def generate_uuid():
+    value = str(uuid.uuid4().hex)
+    return value[:9]
 
-class UserModel(db.Model):
+class IdeasModel(db.Model):
 
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    __tablename__ = 'ideas'
+    id = db.Column(db.String, primary_key=True, unique=True, default=generate_uuid)
     content = db.Column(db.String(255), nullable=False)
     impact = db.Column(db.Integer, nullable=False)
     ease = db.Column(db.Integer, nullable=False)
     confidence = db.Column(db.Integer, nullable=False)
-    average_score = db.Column(db.Integer, nullable=False)
+    average_score = db.Column(db.Float, nullable=False)
     CreateAt = db.Column(db.DateTime(timezone=True), server_default=func.now())
 
     def save_to_db(self):
@@ -38,7 +44,7 @@ class UserModel(db.Model):
                 'ease': x.ease,
                 'confidence': x.confidence,
                 'average_score': x.average_score,
-                'created_at': x.CreateAt
+                'created_at': time.mktime(x.CreateAt.timetuple())
             }
 
         return to_json(cls.query.filter_by(id=id).first_or_404())
@@ -53,9 +59,24 @@ class UserModel(db.Model):
                 'ease': x.ease,
                 'confidence': x.confidence,
                 'average_score': x.average_score,
-                'created_at': x.CreateAt
+                'created_at': time.mktime(x.CreateAt.timetuple())
             }
-        return list(map(lambda x: to_json(x), UserModel.query.all()))
+        return list(map(lambda x: to_json(x), IdeasModel.query.all()))
+
+    @classmethod
+    def return_by_page(cls, page):
+        def to_json(x):
+            return {
+                'id': x.id,
+                'content': x.content,
+                'impact': x.impact,
+                'ease': x.ease,
+                'confidence': x.confidence,
+                'average_score': x.average_score,
+                'created_at': time.mktime(x.CreateAt.timetuple())
+            }
+        return list(map(lambda x: to_json(x), IdeasModel.query.paginate(page=page,
+                                                                        per_page=10).items))
 
     @classmethod
     def delete_by_id(cls, id):
@@ -69,20 +90,23 @@ class UserModel(db.Model):
             return {'message': 'Something went wrong'}, 404
 
     @classmethod
-    def update_passowrd_by_id(cls, id, password):
+    def update_by_id(cls, id, content, impact, ease, confidence):
         user = cls.query.filter_by(id=id).first_or_404()
-        user.password = cls.generate_hash(password=password)
+        user.content = content
+        user.impact = int(impact)
+        user.ease = int(ease)
+        user.confidence = int(confidence)
+        user.average_score = (int(impact) + int(ease) + int(confidence))/3
         try:
             db.session.commit()
-            return {'message': 'Pasword from user: {}, updated.'.format(user.name)}, 200
+            def to_json(x):
+                return {
+                    'content': x.content,
+                    'impact': x.impact,
+                    'ease': x.ease,
+                    'confidence': x.confidence
+                }
+            return to_json(cls.query.filter_by(id=id).first_or_404())
         except SQLAlchemyError as err:
             print(err)
-            return {'message': 'Can\'t update Password'}, 404
-
-    @staticmethod
-    def generate_hash(password):
-        return sha256.hash(password)
-
-    @staticmethod
-    def verify_hash(password, hash):
-        return sha256.verify(password, hash)
+            return {'message': 'Can\'t update data'}, 404
