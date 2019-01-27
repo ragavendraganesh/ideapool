@@ -8,3 +8,4 @@ flask_jwt_extended
 passlib
 pyyaml
 flask-talisman
+libgravatar
