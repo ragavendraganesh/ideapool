@@ -21,27 +21,7 @@ def check_if_token_in_blacklist(decrypted_token):
     return auth_model.RevokedTokenModel.is_jti_blacklisted(jti)
 
 
-def createDatabase():
-    if not os.path.isfile(os.getcwd() + '/login-flask-restfull.db'):
-        try:
-            db.create_all()
-            """
-            admin_psw = secrets.token_hex(nbytes=16)
-            new_user = UserModel(
-                name="admin",
-                surname="of system",
-                cpf="11111111111",
-                email="admin@admin.com",
-                password=UserModel.generate_hash(admin_psw),
-            )
-            new_user.save_to_db()
-            print("\nuser: admin | password: {admin_psw}\n")
-            """
-        except Exception as e:
-            print(e)
-
-
 if __name__ == '__main__':
     port = os.getenv('PORT')
-    createDatabase()
+    #createDatabase()
     app.run(host='0.0.0.0', port=port, use_reloader=True, debug=True)

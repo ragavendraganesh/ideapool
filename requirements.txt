@@ -3,6 +3,8 @@ Flask-Bcrypt
 Flask-HTTPAuth
 Flask-RESTful
 Flask-SQLAlchemy
+Flask-Script
+Flask-Migrate
 flask_cors
 flask_jwt_extended
 passlib
